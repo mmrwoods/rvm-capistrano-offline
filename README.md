@@ -23,7 +23,7 @@ works quite well.
 * Only works with MRI Ruby 1.9 at the moment
 * Pack task currently updates your local rvm installation (this is bad)
 * Requires `rvm_install_type` set to head, stable or master
-* Probably fails if rvm_ruby_string set to head, default or local
+* Probably fails if `rvm_ruby_string` set to head, default or local
 * Only tested with cap multistage, should work without, but don't count on it
 * No support for packaging and installing gems (yet)
 
@@ -57,5 +57,5 @@ Configure rvm, curl and ssh/sftp to obtain rubies from localhost:
 
     $ cap rvm_offline:configure
 
-And now you can install ruby using the standard rvm:install_ruby task.
+And now you can install ruby using the standard `rvm:install_ruby` task.
 If you change your ruby version, you'll need to pack and upload again.
