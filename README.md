@@ -5,7 +5,7 @@ https://github.com/thickpaddy/rvm-capistrano-offline
 ## Description
 
 Allows you to use rvm-capistrano behind a bastard firewall that allows no
-outbound traffic from application servers.
+outbound traffic from your servers.
 
 Can also be used to install rvm and rubies completely offline, hence the name
 (rvm-capistrano-behind-a-bastard-firewall was too long)
@@ -14,7 +14,7 @@ Works by packaging rvm and ruby source archives, uploading them to servers,
 installing rvm from uploaded source and then configuring it to download
 rubies from localhost via sftp.
 
-If you think this sounds fucked up, you'd be right, but amazingly it actually
+If you think this sounds fscked up, you'd be right, but amazingly it actually
 works quite well.
 
 ## Caveats

@@ -10,20 +10,18 @@ def rvm_task(name,&block)
   end
 end
 
-def rvm_archives_url
-  "sftp://#{user}@localhost:#{fetch(:port,22)}#{shared_path}/rvm/archives"
-end
-
-def with_rvm_install_shell
-  set :disabled_rvm_shell, fetch(:default_shell)
-  set :default_shell, fetch(:rvm_install_shell)
-  yield
-  set :default_shell, fetch(:disabled_rvm_shell)
-  unset :disabled_rvm_shell
-end
-
 module Capistrano
   Configuration.instance(true).load do
+
+    # take note of the default rvm shell so we can
+    # toggle between it and the rvm install shell
+    set :rvm_default_shell, fetch(:default_shell)
+
+    def with_rvm_install_shell
+      set :default_shell, fetch(:rvm_install_shell)
+      yield
+      set :default_shell, fetch(:rvm_default_shell)
+    end
 
     namespace :rvm_offline do
 
@@ -51,15 +49,10 @@ module Capistrano
       desc "Uploads packaged RVM and ruby archives to servers."
       rvm_task :upload do
         with_rvm_install_shell do
-          vendor_path = "#{Dir.pwd}/vendor"
-          # OPTIMIZE: clean up this crap - looping over servers is ugly as fsck,
-          # and was only done to quickly work around an failure putting via sftp,
-          # which has probably been resolved by disabling peer verification.
-          rvm_servers = fetch(:rvm_require_role,nil).nil? ? find_servers : find_servers(:roles => fetch(:rvm_require_role))
-          rvm_servers.each do |server|
-            sudo "mkdir -p #{shared_path}/rvm", :hosts => server.host
-            sudo "chown -R #{user} #{shared_path}/rvm", :hosts => server.host
-            run_locally "scp -P #{fetch(:port,22)} -r #{vendor_path}/rvm/archives #{user}@#{server.host}:#{shared_path}/rvm/"
+          sudo "mkdir -p #{shared_path}/rvm/archives"
+          sudo "chown -R #{user} #{shared_path}/rvm"
+          Dir.glob("vendor/rvm/archives/*.*").each do |path|
+            transfer :up, path, "#{shared_path}/rvm/#{File.basename(path)}"
           end
         end
       end
@@ -127,11 +120,12 @@ module Capistrano
         rvm_task :configure_rvm do
           # TODO: support ruby versions other than MRI 1.9
           # FIXME: overwrites rather than modifies rvm user config file on servers
+          archives_url = "sftp://#{user}@localhost:#{fetch(:port,22)}#{shared_path}/rvm/archives"
           with_rvm_install_shell do
             contents = %{
-              ruby_url=#{rvm_archives_url}
-              ruby_1.9_url=#{rvm_archives_url}
-              rubygems_url=#{rvm_archives_url}
+              ruby_url=#{archives_url}
+              ruby_1.9_url=#{archives_url}
+              rubygems_url=#{archives_url}
             }.strip.gsub(/^\s+/,'')
             config_file = "/usr/local/rvm/user/db"
             run "cp -p --no-clobber #{config_file} #{config_file}.original"
