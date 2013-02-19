@@ -52,7 +52,7 @@ module Capistrano
           sudo "mkdir -p #{shared_path}/rvm/archives"
           sudo "chown -R #{user} #{shared_path}/rvm"
           Dir.glob("vendor/rvm/archives/*.*").each do |path|
-            transfer :up, path, "#{shared_path}/rvm/#{File.basename(path)}"
+            transfer :up, path, "#{shared_path}/rvm/archives/#{File.basename(path)}"
           end
         end
       end
