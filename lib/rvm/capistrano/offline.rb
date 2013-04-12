@@ -41,6 +41,7 @@ module Capistrano
           run_locally "rm -rf #{vendor_path}/rvm/archives"
           run_locally "mv $rvm_path/archives #{vendor_path}/rvm/"
         ensure
+          run_locally "rm -rf $rvm_path/archives"
           run_locally "mv $rvm_path/archives.before $rvm_path/archives"
         end
         puts "RVM archives packaged to #{vendor_path}/rvm/archives"
