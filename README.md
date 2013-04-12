@@ -22,7 +22,6 @@ works quite well.
 * Experimental, it will break, and it might be a really bad idea anyway
 * Only works with MRI Ruby 1.9 at the moment
 * Pack task currently updates your local rvm installation (this is bad)
-* Requires `rvm_install_type` set to head, stable or master
 * Probably fails if `rvm_ruby_string` set to head, default or local
 * Only tested with cap multistage, should work without, but don't count on it
 * No support for packaging and installing gems (yet)

@@ -59,9 +59,8 @@ module Capistrano
 
       desc "Installs RVM from uploaded source archive."
       rvm_task :install do
-        # FIXME: only works when rvm_install_type is head|master|stable - will explode if set to version string
         with_rvm_install_shell do
-          path = capture("ls -t1 #{shared_path}/rvm/archives/*rvm-#{rvm_install_type}.tgz | head -n 1", :once => true).chomp
+          path = capture("ls -t1 #{shared_path}/rvm/archives/*rvm-* | head -n 1", :once => true).chomp
           tmp_dir = "/tmp/#{user}-rvm-install"
           run "rm -rf #{tmp_dir}"
           run "mkdir #{tmp_dir}"
