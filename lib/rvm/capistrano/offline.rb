@@ -35,6 +35,7 @@ module Capistrano
         run_locally "rvm cleanup sources"
         run_locally "rvm get #{rvm_install_type}"
         run_locally "rvm fetch #{rvm_ruby_string}"
+        run_locally "rvm rubygems current"
         run_locally "mkdir -p #{vendor_path}/rvm/archives"
         run_locally "rm -f #{vendor_path}/rvm/archives/*"
         run_locally "cp $rvm_path/archives/* #{vendor_path}/rvm/archives/"
