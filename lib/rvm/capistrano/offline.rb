@@ -31,19 +31,13 @@ module Capistrano
         # TODO: warn and exit if no local rvm installation
         # FIXME: currently updates the local rvm installation, without warning
         vendor_path = "#{Dir.pwd}/vendor"
-        run_locally "mv $rvm_path/archives $rvm_path/archives.before"
-        begin
-          run_locally "mkdir $rvm_path/archives"
-          run_locally "rvm fetch #{rvm_ruby_string}"
-          run_locally "rvm get #{rvm_install_type}"
-          run_locally "rvm reload"
-          run_locally "mkdir -p #{vendor_path}/rvm"
-          run_locally "rm -rf #{vendor_path}/rvm/archives"
-          run_locally "mv $rvm_path/archives #{vendor_path}/rvm/"
-        ensure
-          run_locally "rm -rf $rvm_path/archives"
-          run_locally "mv $rvm_path/archives.before $rvm_path/archives"
-        end
+        run_locally "rvm cleanup archives"
+        run_locally "rvm cleanup sources"
+        run_locally "rvm get #{rvm_install_type}"
+        run_locally "rvm fetch #{rvm_ruby_string}"
+        run_locally "mkdir -p #{vendor_path}/rvm/archives"
+        run_locally "rm -f #{vendor_path}/rvm/archives/*"
+        run_locally "cp $rvm_path/archives/* #{vendor_path}/rvm/archives/"
         puts "RVM archives packaged to #{vendor_path}/rvm/archives"
       end
 
